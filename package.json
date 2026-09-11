@@ -9,7 +9,7 @@
     },
     "engineStrict": false,
     "scripts": {
-        "postinstall": "node server/game/game.js && cd server && npm install --include=dev && cd ../client && npm install && cd ..",
+        "postinstall": "node server/game/game && cd server && npm install --include=dev && cd ../client && npm install && cd ..",
         "client": "cd client && npx vite",
         "server": "node start-server.js",
         "install-server": "cd server && npm install --include=dev"
