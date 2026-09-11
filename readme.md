@@ -1,306 +1,214 @@
-# technical-assessment
-A trust-minimised implementation of a multiplayer online game on-chain.
+# Metaspace Technical Assessment
 
-## Motivation
-Video games are supposed to be **fun** and **challenging**, not mindless, boring staking disguised as _"gameplay"_.
+## Challenge
 
-Here, I aim to design a _trust-minimized_ crypto game implementation that can support both single and live multiplayer gameplay. It utilises the blockchain to build the player progression/rewards system and act as the game's decentralised, immutable database layer.
+Metaspace is a simple roguelike game built with **Phaser.js and Node.js**. It is a Crypto Play-to-Earn game.
 
----
+Your first task is to get the game running successfully, fix any issues you find, and then **play the game yourself** to understand how the gameplay works.
 
-## Requirements
+### How to Run the Game
 
-### Why These Specific Versions?
+#### Requirements
 
-- **Node.js v20+**: Supports all modern JavaScript features required for this architecture
-  - ⭐ **Development**: v26 (latest features, better performance)
-  - ✅ **Production**: v24 LTS (stable, long-term support)
-- **npm v10+**: Dependency resolution for monorepo structure (root + server + client)
-- **Git**: Version control for tracking changes and collaboration
+- Node.js v20 or higher
+- npm v10 or higher
+- Git
 
-### Minimum System Requirements
+#### 1. Clone the repository
 
-```bash
-node --version    # Must be v20.0.0 or higher
-npm --version     # Must be v10.0.0 or higher
-```
-
----
-
-## Installation & Setup
-
-### Step 1: Prepare Your Environment
-
-**Why This Step Matters:**
-- Different Node versions behave differently
-- Game server requires specific packages that aren't compatible with old Node
-- Prevents "works on my machine" issues
-
-**1a. Install Node.js**
-
-```bash
-# Option A: Download from nodejs.org
-# - Development: v26 (latest, with cutting-edge features)
-# - Production: v24 LTS (stable, tested thoroughly)
-Visit: https://nodejs.org/
-
-# Option B: Use version manager (Recommended)
-# For Mac/Linux:
-nvm install 24
-nvm use 24
-
-# For Windows:
-nvm install 24.0.0
-nvm use 24.0.0
-```
-
-**1b. Verify Installation**
-
-```bash
-node --version    # Should show v20.0.0 or higher
-npm --version     # Should show v10.0.0 or higher
-```
-
-**What These Check:**
-- Node.js: Runtime environment for server and build tools
-- npm: Package manager for installing dependencies
-
-**1c. Clone and Install Project**
 ```bash
 git clone https://github.com/davideliasdev09/MetaSpace_TechnicalAssessment.git
 cd MetaSpace_TechnicalAssessment
+```
+
+#### 2. Install dependencies
+
+```bash
 npm install
 ```
 
-This command automatically:
-- Installs root dependencies
-- Installs server dependencies (including devDependencies)
-- Installs client dependencies
+This installs the root, server, and client dependencies.
 
----
+#### 3. Start the game server
 
-### Step 2: Start the Game (Open 2 terminals)
+Open a terminal and run:
 
-**Terminal 1** - Start multiplayer game server (port 9208)
 ```bash
 npm run server
 ```
 
-**Terminal 2** - Start client development server (port 3000)
+The multiplayer server runs on port **9208**.
+
+#### 4. Start the client
+
+Open another terminal and run:
+
 ```bash
 npm run client
 ```
 
----
+The client runs on port **3000**.
 
-### Step 3: Access the Game
+#### 5. Open the game
 
-Open your browser and navigate to:
-```
+Open:
+
+```text
 http://localhost:3000
 ```
 
-**What You See:**
-- 2D multiplayer game environment
-- Your character (rendered based on server validation)
-- Objectives to collect (coins, items, etc.)
-- Real-time updates from other connected players
+
+
+If you have problems running the project, you should investigate and fix them yourself. For example, the current README mentions possible `nodemon`, port, Canvas, and Node.js version issues.
 
 ---
 
-## Architecture Deep Dive
+# Backend Developer
 
-### Why We Chose Each Technology
+After getting the game running and understanding the gameplay, design a **good backend architecture** for this game.
 
-#### **PhaserJS (v4.2.1) - Game Engine**
-**Problem Solved:**
-- Complex 2D graphics, sprite management, collision detection needed
-- Building from scratch would take months
+Create a technical document explaining:
 
-**Why Phaser:**
-- Mature library (20+ years in game development)
-- Built for web games specifically
-- Handles rendering, physics, animations efficiently
-- Works identically on server (for logic) and client (for rendering)
+- Database architecture and DB layer.
+- Multiplayer real-time communication between the game client and server.
+- How you would scale the backend when there are many players.
+- How you would handle game rooms and multiplayer sessions.
+- How you would use caching.
+- How you would make the system reliable and scalable.
 
-#### **Geckos.io (v3.1.0) - Real-Time Communication**
-**Problem Solved:**
-- HTTP is too slow for multiplayer games (request-response model)
-- Need real-time, bidirectional communication
+You can choose any technology, programming language, database, framework, or library that you think is appropriate.
 
-**Why Geckos.io:**
-- Uses WebRTC (peer-to-peer, ultra-low latency)
-- Fallback to WebSocket for compatibility
-- Built specifically for multiplayer games
-- Handles thousands of messages per second
+### Microservices
 
-#### **Express.js (v4.19.2) - Web Server**
-**Problem Solved:**
-- Need HTTP endpoints for:
-  - Fetching game configuration
-  - Authentication/challenge system
-  - Serving static assets
+If possible, also provide a **microservice architecture** for the game.
 
-**Why Express:**
-- Lightweight and focused
-- Industry standard for Node.js backends
-- Easy to extend with middleware
-- Well-documented
+Think about how the system could handle very large gameplay traffic and many concurrent players.
 
-#### **Ethers.js (v6.13.0) - Blockchain Interaction**
-**Problem Solved:**
-- Need to interact with smart contracts
-- Need to verify player addresses and signatures
+You may include technologies such as:
 
-**Why Ethers.js:**
-- Modern replacement for Web3.js
-- Better TypeScript support
-- Cleaner API for signing/verification
-- Smaller bundle size
+- Docker
+- Kubernetes
+- Redis or another cache
+- Message queues
+- Load balancing
+
+You don't have to use these exact technologies. Choose what you think is appropriate and explain your decisions.
 
 ---
 
-## Gameplay Flow (How It All Works Together)
+# Blockchain Engineer
 
-```
-1. Player Action
-   └─→ "I want to move right"
-   
-2. Client Sends to Server
-   └─→ WebRTC: "Player input: moveRight"
-   
-3. Server Validates
-   └─→ "Is this player authorized?"
-   └─→ "Is this move legal?"
-   └─→ "Any collision detection issues?"
-   
-4. Server Updates Game State
-   └─→ Player position: (100, 200)
-   └─→ Check objective: "Did player collect coin?"
-   
-5. Server Broadcasts to All Clients
-   └─→ "Player 1 is now at (100, 200)"
-   └─→ "All other players, here's the updated world state"
-   
-6. Client Renders
-   └─→ Shows all players at their validated positions
-   
-7. Achievement Detected
-   └─→ Server: "Player collected the coin!"
-   └─→ Server signs proof of achievement
-   └─→ Sends signed message to player
-   
-8. Player Claims Reward
-   └─→ Calls smart contract with signed message
-   └─→ Smart contract verifies server signature
-   └─→ Rewards distributed on-chain
-```
+Design the **smart-contract architecture** for this game.
+
+You can choose **any blockchain network or ecosystem you want**. For example, you can use an **EVM-compatible network (Ethereum, Polygon, Arbitrum, Base, etc.)**, **Solana**, or another blockchain you think is appropriate.
+
+**The choice of blockchain does not matter.** We are more interested in your architecture, technical decisions, and understanding of how blockchain should be integrated into the game.
+
+Consider how the following could be represented on the blockchain:
+
+- Game characters
+- Items
+- Weapons
+- Points/rewards
+- Enemies
+- Rooms
+- Player progression
+- Character status
+- Item ownership
+
+Characters, items, weapons, and other game assets may be represented as NFTs where appropriate.
+
+For character/player status, consider information such as:
+
+- Health
+- Level
+- Items owned
+- Weapons owned
+- Progression
+
+Explain what should be stored on-chain and what should remain off-chain.
 
 ---
 
-## Security Model
+# Gas Fees & Game Performance
 
-### What Makes This Secure?
+This is an important part of the challenge.
 
-**Server-Side Validation:**
-- No client action is trusted without server verification
-- Players cannot forge achievements
-- All state changes are logged and verified
+The game should feel **fast and smooth**.
 
-**Cryptographic Signatures:**
-- Only the server can sign achievement messages
-- Smart contracts verify signatures before awarding rewards
-- Private keys never leave the server
+For example:
 
-**Hybrid Architecture:**
-- Game logic stays fast and flexible on server
-- Final rewards are immutable on blockchain
-- Best of both worlds: performance + security
+> A player receives an item during gameplay.
 
----
+The player should not have to wait for a blockchain transaction to finish before continuing to play.
 
-## Troubleshooting
+Explain how you would handle this situation while still keeping blockchain ownership/state secure.
 
-### "Port 9208 already in use"
-**Why This Happens:**
-- Another game server instance is running
-- Node process didn't shut down cleanly
+Think about:
 
-**Fix:**
-```bash
-# Windows:
-Get-Process node | Stop-Process
+- Gas optimization.
+- Batch transactions.
+- Off-chain processing.
+- Signed messages.
+- Layer 2 networks.
+- Transaction queues.
+- Delayed/async blockchain updates.
+- Any other solution you think is appropriate.
 
-# Mac/Linux:
-killall node
-```
+You should explain **how you would save gas when there are a large number of transactions** and **how you would prevent blockchain transaction latency from affecting gameplay**.
 
-### "Cannot connect to server"
-**Why This Happens:**
-- Server isn't running
-- Client/Server on different machines (network issues)
+The existing project already demonstrates one possible approach where the authoritative game server determines that a reward has been earned and signs a message that can later be verified by the smart contract.
 
-**Fix:**
-```bash
-# Terminal 1: Make sure server is running
-npm run server
-
-# Terminal 2: Client should auto-connect
-npm run client
-```
-
-### Dependencies installation fails
-**Why This Happens:**
-- Node version too old
-- npm cache corruption
-
-**Fix:**
-```bash
-# Clear npm cache
-npm cache clean --force
-
-# Update npm
-npm install -g npm@latest
-
-# Reinstall
-npm install
-```
+You may use this approach, improve it, or propose a completely different solution.
 
 ---
 
-## Technology Stack Rationale
+# Deliverables
 
-| Component | Technology | Why This Choice |
-|-----------|-----------|-----------------|
-| Game Engine | PhaserJS | Industry standard, web-optimized |
-| Real-Time Communication | Geckos.io + WebRTC | Ultra-low latency, peer-to-peer |
-| Backend | Express.js + Node.js | Fast, JavaScript, event-driven |
-| Blockchain | Ethers.js | Modern, secure, TypeScript-ready |
-| Development | Vite + TypeScript | Fast builds, type safety |
-| Monitoring | Nodemon | Auto-reload during development |
+Please provide:
 
----
+1. **A working game**
+   - Fix the issues required to run the game.
+   - Make sure the game can be played successfully.
 
-## Summary: Problems We Solve
+2. **Backend architecture document**
+   - DB layer.
+   - Multiplayer networking.
+   - Scalability.
+   - Microservices, if applicable.
+   - Docker/Kubernetes, if applicable.
+   - Cache mechanism.
 
-This project addresses **four critical challenges** in gaming:
+3. **Blockchain architecture document**
+   - Smart-contract design.
+   - NFT/asset ownership.
+   - On-chain/off-chain architecture.
+   - Gas optimization.
+   - Fast gameplay / transaction strategy.
 
-### ✅ **Unvalidated Rewards**
-Players cannot claim rewards they haven't earned. Server-signed messages prove achievement before blockchain distribution.
-
-### ✅ **Slow, Laggy Gameplay**
-Real-time WebRTC communication + client-side prediction = smooth 60fps gameplay without sacrificing validation.
-
-### ✅ **Scalability Limitations**
-Hybrid architecture lets you handle thousands of concurrent players without gas fees or blockchain congestion.
-
-### ✅ **Inflexible Smart Contracts**
-Game logic stays flexible on the server. Smart contracts only handle final reward distribution (the part that needs to be immutable).
-
-**The Result:** A playable, fair, scalable blockchain game that actually feels good to play.
+4. **Code and configuration**
+   - Any code you implement.
+   - Smart contracts if you implement them.
+   - Docker/Kubernetes configuration if applicable.
 
 ---
 
-## Final thoughts
+# Submission
 
-Although this approach may not seem to be the most trustless, decentralised solution to building crypto games since we rely on a centralised game server to handle the game engine, in my opinion, I think that's rarely an issue. Not everything needs to be on-chain. Having your players' progression and items stored there is more than enough. This even provides you an advantage in the form of flexibility, upgradability, control and most importantly, being able to build fun and engaging games for your players. Thank you! 🎮✨
+Once you have completed the challenge:
+
+1. Push your work to **your own Git repository**.
+2. Make sure the repository contains your code and technical documents.
+3. Reply to the **Metaspace assessment email** with the Git repository link.
+
+---
+
+## Important
+
+**Do not use AI to understand the gameplay. You must play the game yourself.**
+
+We want to see that you actually ran the project, played the game, and understood how it works before designing your architecture.
+
+We may evaluate the submission based on whether your technical decisions demonstrate a real understanding of the game's gameplay and existing implementation.
+
+Good luck!
