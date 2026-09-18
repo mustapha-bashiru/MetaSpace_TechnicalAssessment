@@ -42,7 +42,11 @@ export default class ClaimScene extends Phaser.Scene {
         }
 
         //add components
-        this.button = this.add.nineslice(0, 0, 135, 18, BTN_GREY, 3, 3, 3, 3).setOrigin(0.5, 0.5).setScale(3, 3).setInteractive()
+        const button = (this.add as any).nineslice(0, 0, 135, 18, BTN_GREY, 3, 3, 3, 3).setOrigin(0.5, 0.5).setScale(3, 3).setInteractive()
+        if (!button) {
+            throw new Error('Failed to create claim button')
+        }
+        this.button = button
         this.text = this.add.bitmapText(0, 0, UPHEAVAL, text, 32).setOrigin(0.5, 0.5)
         this.container = this.add.container(width * 0.5, height * 0.4, [this.button, this.text])
 

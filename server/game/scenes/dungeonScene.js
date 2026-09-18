@@ -1,6 +1,6 @@
 import Phaser from 'phaser'
 import { SnapshotInterpolation } from '@geckos.io/snapshot-interpolation'
-import { dirname } from 'path'
+import path, { dirname } from 'path'
 import { fileURLToPath } from 'url'
 import { ethers } from 'ethers'
 import { signPacket } from '../utils.js'
@@ -24,10 +24,13 @@ export default class DungeonScene extends Phaser.Scene {
         this.wallet = wallet
     }
 
-    preload() {
-        //load tilemap
+   preload() {
+        // Safe cross-platform resolution without leading slashes - here
         const __dirname = dirname(fileURLToPath(import.meta.url))
-        this.load.tilemapTiledJSON('dungeon-tilemap', `/${__dirname}/../assets/tilemaps/tilemap.json`)
+        const tilemapPath = path.resolve(__dirname, '../assets/tilemaps/tilemap.json')
+
+        // Load tilemap
+        this.load.tilemapTiledJSON('dungeon-tilemap', tilemapPath)
     }
 
     create() {
